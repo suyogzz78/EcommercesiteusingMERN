@@ -8,7 +8,7 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import ProtectedRoute from "../components/ProtectedRoute";
 import AdminPage from "../pages/AdminPage";
-
+import OrderSuccessPage from "../pages/OrderSuccessPage";
 const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<HomePage />} />
@@ -22,6 +22,7 @@ const AppRoutes = () => (
         </ProtectedRoute>
       }
     />
+    <Route path="/order-success/:id" element={<OrderSuccessPage />} />
     <Route path="/login" element={<LoginPage />} />
     <Route path="/register" element={<RegisterPage />} />
     <Route
