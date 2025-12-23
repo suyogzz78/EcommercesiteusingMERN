@@ -32,13 +32,16 @@ const login = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  if (user && (await bcrypt.compare(password, user.password))) {
+  if (user && (await user.matchPassword(password))) {
     const token = jwt.sign(
       { 
         id: user._id,
-        isAdmin: user.isAdmin 
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin  
       }, 
-      process.env.JWT_SECRET, {
+      process.env.JWT_SECRET, 
+      {
         expiresIn: '7d',
       }
     );
@@ -57,5 +60,4 @@ const login = asyncHandler(async (req, res) => {
     throw new Error('Invalid email or password');
   }
 });
-
 module.exports = { register, login };
