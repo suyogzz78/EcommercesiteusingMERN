@@ -1,9 +1,6 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 
-// @desc    Create new order
-// @route   POST /api/orders
-// @access  Private
 const addOrderItems = async (req, res) => {
   try {
     const {
@@ -21,7 +18,7 @@ const addOrderItems = async (req, res) => {
       return res.status(400).json({ message: 'No order items' });
     }
 
-    // Create order
+    
     const order = new Order({
       user: req.user._id,
       orderItems,
@@ -32,12 +29,12 @@ const addOrderItems = async (req, res) => {
       shippingPrice,
       totalPrice,
       notes,
-      // For COD, mark as paid when delivered
+      
       isPaid: paymentMethod === 'cod' ? false : false,
       orderStatus: paymentMethod === 'cod' ? 'pending' : 'pending',
     });
 
-    // Update product stock
+
     for (const item of orderItems) {
       const product = await Product.findById(item.product);
       if (product) {
@@ -55,9 +52,7 @@ const addOrderItems = async (req, res) => {
   }
 };
 
-// @desc    Get order by ID
-// @route   GET /api/orders/:id
-// @access  Private
+
 const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate('user', 'name email');
@@ -66,7 +61,6 @@ const getOrderById = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Check if user is authorized
     if (order.user._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
       return res.status(401).json({ message: 'Not authorized' });
     }
@@ -78,9 +72,7 @@ const getOrderById = async (req, res) => {
   }
 };
 
-// @desc    Get logged in user orders
-// @route   GET /api/orders/myorders
-// @access  Private
+
 const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id }).sort('-createdAt');
@@ -91,9 +83,6 @@ const getMyOrders = async (req, res) => {
   }
 };
 
-// @desc    Get all orders
-// @route   GET /api/orders
-// @access  Private/Admin
 const getOrders = async (req, res) => {
   try {
     if (!req.user.isAdmin) {
@@ -111,9 +100,6 @@ const getOrders = async (req, res) => {
   }
 };
 
-// @desc    Update order to paid
-// @route   PUT /api/orders/:id/pay
-// @access  Private
 const updateOrderToPaid = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -139,9 +125,7 @@ const updateOrderToPaid = async (req, res) => {
   }
 };
 
-// @desc    Update order to delivered
-// @route   PUT /api/orders/:id/deliver
-// @access  Private/Admin
+
 const updateOrderToDelivered = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -162,9 +146,6 @@ const updateOrderToDelivered = async (req, res) => {
   }
 };
 
-// @desc    Update order status
-// @route   PUT /api/orders/:id/status
-// @access  Private/Admin
 const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -183,9 +164,6 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-// @desc    Cancel order
-// @route   PUT /api/orders/:id/cancel
-// @access  Private
 const cancelOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
