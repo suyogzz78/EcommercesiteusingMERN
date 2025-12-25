@@ -1,24 +1,18 @@
 const Order = require('../models/Order');
 const axios = require('axios');
 
-// @desc    Generate payment verification
-// @route   POST /api/payment/verify
-// @access  Private
 const verifyPayment = async (req, res) => {
   try {
     const { paymentId, orderId, signature, paymentMethod } = req.body;
 
-    // In production, you would verify with Khalti/eSewa API here
-    // For now, we'll simulate successful verification
-    
-    // Find the order
+ 
     const order = await Order.findById(orderId);
     
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Mark as paid
+
     order.isPaid = true;
     order.paidAt = Date.now();
     order.paymentResult = {
@@ -44,9 +38,7 @@ const verifyPayment = async (req, res) => {
   }
 };
 
-// @desc    Get payment configuration
-// @route   GET /api/payment/config
-// @access  Public
+
 const getPaymentConfig = async (req, res) => {
   try {
     const config = {
@@ -57,7 +49,7 @@ const getPaymentConfig = async (req, res) => {
       esewa: {
         merchantId: process.env.ESEWA_MERCHANT_ID || 'test_merchant',
         enabled: true,
-        sandbox: true, // Set to false in production
+        sandbox: true, 
         sandboxUrl: 'https://rc-epay.esewa.com.np/api/epay/main/v2/form',
         sandboxMerchantCode: 'EPAYTEST',
       },
@@ -85,9 +77,7 @@ const getPaymentConfig = async (req, res) => {
   }
 };
 
-// @desc    Generate payment QR code data
-// @route   POST /api/payment/qr
-// @access  Private
+
 const generateQRData = async (req, res) => {
   try {
     const { orderId, amount, customerName } = req.body;
@@ -119,9 +109,7 @@ const generateQRData = async (req, res) => {
   }
 };
 
-// @desc    Initiate Khalti payment
-// @route   POST /api/payment/khalti/initiate
-// @access  Private
+
 const initiateKhaltiPayment = async (req, res) => {
   try {
     const { amount, orderId, customerInfo } = req.body;
@@ -148,9 +136,7 @@ const initiateKhaltiPayment = async (req, res) => {
   }
 };
 
-// @desc    Initiate eSewa payment
-// @route   POST /api/payment/esewa/initiate
-// @access  Private
+
 const initiateEsewaPayment = async (req, res) => {
   try {
     const { orderId, amt, tax, shipping, discount, customerInfo } = req.body;
@@ -192,9 +178,7 @@ const initiateEsewaPayment = async (req, res) => {
   }
 };
 
-// @desc    Handle eSewa success callback
-// @route   GET /api/payment/esewa/success
-// @access  Public (Called by eSewa)
+
 const handleEsewaSuccess = async (req, res) => {
   try {
     console.log('eSewa Success Callback Received:', req.query);
