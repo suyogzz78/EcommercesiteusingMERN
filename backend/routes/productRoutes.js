@@ -5,20 +5,21 @@ const {
   getProductById,
   createProduct,
   updateProduct,
+  deleteProduct, // ← ADD THIS IMPORT
 } = require('../controllers/productController');
 
 const { protect, admin } = require('../middleware/authMiddleware');
 
-
+// Public routes
 router.get('/', getProducts);
 router.get('/:id', getProductById);
 
+// Test routes (optional - can remove later)
 router.post('/test-simple', (req, res) => {
   console.log('✅ POST /api/products/test-simple');
   console.log('Body:', req.body);
   res.json({ success: true, message: 'Simple POST works' });
 });
-
 
 router.post('/test-protect', protect, (req, res) => {
   console.log('✅ POST /api/products/test-protect');
@@ -29,7 +30,6 @@ router.post('/test-protect', protect, (req, res) => {
     user: req.user?.email 
   });
 });
-
 
 router.post('/test-admin', protect, admin, (req, res) => {
   console.log('✅ POST /api/products/test-admin');
@@ -42,11 +42,9 @@ router.post('/test-admin', protect, admin, (req, res) => {
   });
 });
 
-
-
+// Protected admin routes
 router.post('/', protect, admin, createProduct);
-
-
 router.put('/:id', protect, admin, updateProduct);
+router.delete('/:id', protect, admin, deleteProduct); // ← FIXED: Use router.delete()
 
 module.exports = router;
