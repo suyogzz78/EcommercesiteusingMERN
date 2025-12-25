@@ -12,10 +12,7 @@ const {
 } = require('../controllers/orderController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
-// Public routes
-// (none)
 
-// Protected routes
 router.route('/').post(protect, addOrderItems);
 router.route('/myorders').get(protect, getMyOrders);
 router.route('/:id').get(protect, getOrderById);
